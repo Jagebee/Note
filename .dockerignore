@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.gitignore
+*.md
+.DS_Store
+.env
+.env.local
+.env.production
+backups/*.json
+render_out
+generate_prd.py
+*.docx
+nginx
