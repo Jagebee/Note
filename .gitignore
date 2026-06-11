@@ -1,0 +1,14 @@
+.next
+node_modules
+.env
+.env.local
+*.log
+.DS_Store
+prisma/dev.db
+backups/*.json
+public/uploads/*.jpeg
+public/uploads/*.jpg
+public/uploads/*.png
+render_out/
+*.docx
+generate_prd.py

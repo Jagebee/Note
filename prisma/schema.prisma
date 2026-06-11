@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  /// 单管理员账号，仅用于登录鉴权
+  id           String   @id @default(cuid())
+  username     String   @unique
+ passwordHash String
+  nickname     String?
+  avatar       String?
+ createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  settings     UserSetting?
+}
+
+model UserSetting {
+  /// 单用户个性化设置，目前用于持久化背景图
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  backgroundImage String?  @db.Text
+  accentColor     String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Subject {
+  /// 科目（政治、英语、数学等）
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  notes       Note[]
+}
+
+model Tag {
+  /// 标签用于多维检索与归档
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  notes     Note[]
+
+  @@index([name])
+}
+
+model Note {
+  /// TipTap JSON 原文 + plainText 搜索字段
+  id              String       @id @default(cuid())
+  title           String
+  contentJson     Json
+  plainText       String       @db.LongText
+  isWrongQuestion Boolean      @default(false)
+  subjectId       String
+  subject         Subject      @relation(fields: [subjectId], references: [id], onDelete: Restrict)
+  tags            Tag[]
+  images          ImageAsset[]
+  createdAt       DateTime     @default(now())
+ updatedAt       DateTime     @updatedAt
+  deletedAt       DateTime?
+
+ @@index([title])
+  @@index([subjectId])
+  @@index([isWrongQuestion])
+}
+
+model ImageAsset {
+  /// 本地上传图片资源，path 对应 public/uploads 下的相对访问路径
+  id        String   @id @default(cuid())
+  path      String   @unique
+  alt       String?
+  mimeType  String?
+  size      Int?
+  noteId    String?
+  note      Note?    @relation(fields: [noteId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([noteId])
+}
