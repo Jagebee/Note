@@ -7,7 +7,7 @@ RUN apk add --no-cache openssl
 
 # Dependencies layer (cached unless package.json changes)
 COPY package*.json ./
-RUN npm ci
+RUN npm ci && npm install --save-dev @types/bcryptjs
 
 # Prisma client generation
 COPY prisma ./prisma

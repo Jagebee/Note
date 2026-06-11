@@ -24,6 +24,7 @@ export async function GET(request: Request) {
 
   const where = {
     deletedAt: null,
+      userId: session.user.id,
     ...(subjectId ? { subjectId } : {}),
     ...(typeof isWrongQuestion === 'string' ? { isWrongQuestion: isWrongQuestion === 'true' } : {}),
     ...(title
@@ -81,7 +82,8 @@ export async function POST(request: Request) {
     data: {
       title: parsed.data.title,
       subjectId: parsed.data.subjectId,
-      contentJson: parsed.data.contentJson,
+      userId: session.user.id,
+      contentJson: parsed.data.contentJson as any,
       plainText,
       isWrongQuestion: parsed.data.isWrongQuestion ?? false,
       tags: parsed.data.tagIds?.length

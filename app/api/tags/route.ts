@@ -13,6 +13,7 @@ export async function GET() {
   }
 
   const tags = await prisma.tag.findMany({
+      where: { userId: session.user.id },
     orderBy: { name: 'asc' }
   });
 
@@ -32,7 +33,8 @@ export async function POST(request: Request) {
   }
 
   const existing = await prisma.tag.findUnique({
-    where: { name: parsed.data.name }
+    where: { name: parsed.data.name,
+        userId: session.user.id }
   });
   if (existing) {
     return fail('标签已存在', 'TAG_EXISTS', 409);
@@ -40,7 +42,8 @@ export async function POST(request: Request) {
 
   const created = await prisma.tag.create({
     data: {
-      name: parsed.data.name
+      name: parsed.data.name,
+        userId: session.user.id
     }
   });
 

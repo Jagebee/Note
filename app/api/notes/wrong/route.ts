@@ -14,7 +14,8 @@ export async function GET() {
   const notes = await prisma.note.findMany({
     where: {
       isWrongQuestion: true,
-      deletedAt: null
+      deletedAt: null,
+      userId: session.user.id
     },
     include: {
       subject: true,

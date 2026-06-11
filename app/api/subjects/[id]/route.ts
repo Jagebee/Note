@@ -16,8 +16,8 @@ export async function GET(_: Request, { params }: Params) {
     return fail('未登录', 'UNAUTHORIZED', 401);
   }
 
-  const subject = await prisma.subject.findUnique({
-    where: { id: params.id }
+  const subject = await prisma.subject.findFirst({
+      where: { id: params.id, userId: session.user.id },
   });
 
   if (!subject) {
@@ -51,7 +51,7 @@ export async function PATCH(request: Request, { params }: Params) {
   }
 
   const updated = await prisma.subject.update({
-    where: { id: params.id },
+      where: { id: params.id, userId: session.user.id },
     data: {
       name: parsed.data.name,
       description: parsed.data.description ?? null
@@ -76,7 +76,7 @@ export async function DELETE(_: Request, { params }: Params) {
   }
 
   await prisma.subject.delete({
-    where: { id: params.id }
+      where: { id: params.id, userId: session.user.id },
   });
 
   return ok({ success: true });

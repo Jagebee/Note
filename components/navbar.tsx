@@ -150,8 +150,21 @@ export function Navbar() {
             }`}
             href="/settings"
           >
-            <p className="text-sm font-bold">⚙️ Settings</p>
-          </Link>
+           <p className="text-sm font-bold">⚙️ Settings</p>
+         </Link>
+
+          {session?.user?.role === 'ADMIN' ? (
+            <Link
+              className={`group mx-4 rounded-[1.25rem] px-4 py-2.5 text-left transition ${
+                isActive(pathname, '/admin')
+                  ? 'accent-bg-15 text-white'
+                  : 'text-zinc-400 hover:bg-white/5 hover:text-white'
+              }`}
+              href="/admin"
+            >
+              <p className="text-sm font-bold">🛡️ Admin</p>
+            </Link>
+          ) : null}
 
           <div className="border-t border-white/[0.06] px-4 py-2">
             <button

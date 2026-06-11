@@ -33,7 +33,7 @@ export async function PATCH(request: Request, { params }: Params) {
   }
 
   const updated = await prisma.tag.update({
-    where: { id: params.id },
+      where: { id: params.id, userId: session.user.id },
     data: { name: parsed.data.name }
   });
 
@@ -47,7 +47,7 @@ export async function DELETE(_: Request, { params }: Params) {
   }
 
   await prisma.tag.delete({
-    where: { id: params.id }
+      where: { id: params.id, userId: session.user.id },
   });
 
   return ok({ success: true });

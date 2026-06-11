@@ -242,7 +242,6 @@ export function SettingsForm() {
           <div className="relative h-16 w-16 flex-shrink-0">
             {avatarSrc ? (
               <img
-                className="h-full w-full rounded-full object-cover ring-2"
                 className="h-full w-full rounded-full object-cover ring-2 accent-ring-40"
                 src={avatarSrc}
                 alt="avatar"

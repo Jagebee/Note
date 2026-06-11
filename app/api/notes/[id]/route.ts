@@ -17,8 +17,8 @@ export async function GET(_: Request, { params }: Params) {
     return fail('未登录', 'UNAUTHORIZED', 401);
   }
 
-  const note = await prisma.note.findUnique({
-    where: { id: params.id },
+  const note = await prisma.note.findFirst({
+      where: { id: params.id, userId: session.user.id },
     include: {
       subject: true,
       tags: true,
@@ -46,11 +46,11 @@ export async function PATCH(request: Request, { params }: Params) {
   }
 
   const updated = await prisma.note.update({
-    where: { id: params.id },
+      where: { id: params.id, userId: session.user.id },
     data: {
       title: parsed.data.title,
       subjectId: parsed.data.subjectId,
-      contentJson: parsed.data.contentJson,
+      contentJson: parsed.data.contentJson as any,
       plainText: parsed.data.contentJson
         ? parsed.data.plainText ?? extractPlainTextFromTipTapJSON(parsed.data.contentJson)
         : parsed.data.plainText,
@@ -96,7 +96,7 @@ export async function DELETE(_: Request, { params }: Params) {
   }
 
   await prisma.note.update({
-    where: { id: params.id },
+      where: { id: params.id, userId: session.user.id },
     data: { deletedAt: new Date() }
   });
 

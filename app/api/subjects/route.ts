@@ -13,6 +13,7 @@ export async function GET() {
   }
 
   const subjects = await prisma.subject.findMany({
+      where: { userId: session.user.id },
     orderBy: { updatedAt: 'desc' }
   });
 
@@ -32,7 +33,8 @@ export async function POST(request: Request) {
   }
 
   const existing = await prisma.subject.findUnique({
-    where: { name: parsed.data.name }
+    where: { name: parsed.data.name,
+        userId: session.user.id }
   });
   if (existing) {
     return fail('科目名称已存在', 'SUBJECT_EXISTS', 409);
@@ -41,6 +43,7 @@ export async function POST(request: Request) {
   const created = await prisma.subject.create({
     data: {
       name: parsed.data.name,
+        userId: session.user.id,
       description: parsed.data.description ?? null
     }
   });
